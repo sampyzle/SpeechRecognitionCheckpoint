@@ -5,31 +5,34 @@ def transcribe_speech(api_choice, language_choice):
     # Initialize recognizer class
     r = sr.Recognizer()
 
-    # Reading Microphone as source
-    with sr.Microphone() as source:
-        st.info("Speak now...")
-        
-        # listen for speech and store in audio_text variable
-        audio_text = r.listen(source)
+    try:
+        # Reading Microphone as source
+        with sr.Microphone() as source:
+            st.info("Speak now...")
+            
+            # listen for speech and store in audio_text variable
+            audio_text = r.listen(source)
 
-        st.info("Transcribing...")
+            st.info("Transcribing...")
 
-        try:
-            if api_choice == "Google Speech Recognition":
-                # using Google Speech Recognition
-                text = r.recognize_google(audio_text, language=language_choice)
-            elif api_choice == "Sphinx":
-                # using CMU Sphinx
-                text = r.recognize_sphinx(audio_text, language=language_choice)
-            else:
-                text = "Unsupported API"
-            return text
-        except sr.UnknownValueError:
-            return "Sorry, I did not understand the audio."
-        except sr.RequestError as e:
-            return f"Sorry, there was an error with the API request; {e}"
-        except Exception as e:
-            return f"An error occurred: {e}"
+            try:
+                if api_choice == "Google Speech Recognition":
+                    # using Google Speech Recognition
+                    text = r.recognize_google(audio_text, language=language_choice)
+                elif api_choice == "Sphinx":
+                    # using CMU Sphinx
+                    text = r.recognize_sphinx(audio_text, language=language_choice)
+                else:
+                    text = "Unsupported API"
+                return text
+            except sr.UnknownValueError:
+                return "Sorry, I did not understand the audio."
+            except sr.RequestError as e:
+                return f"Sorry, there was an error with the API request; {e}"
+            except Exception as e:
+                return f"An error occurred: {e}"
+    except Exception as e:
+        return f"An error occurred with microphone access: {e}"
 
 def main():
     st.title("Speech Recognition App")
